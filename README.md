@@ -77,12 +77,11 @@ func main() {
 ```
 
 ## Future Features
-
--[] Custom Error Types
--[] Custom Report and Status Types
--[] "Safe" GCODE Executor for enhanced safety during printing
--[] Live Video Stream from the printer
--[] Testing support for CloudPrinterConfig (Currently only LocalPrinterConfig has been tested)
+- [] Custom Error Types
+- [] Custom Report and Status Types
+- [] "Safe" GCODE Executor for enhanced safety during printing
+- [] Live Video Stream from the printer
+- [] Testing support for CloudPrinterConfig (Currently only LocalPrinterConfig has been tested)
 ## Acknowledgements
 
 A special thanks to OpenBambuAPI for their incredible work, which served as the foundation for this project.
