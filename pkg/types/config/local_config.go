@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/RobertMNewton/bambu-golang-api/internal/utils"
+	"github.com/RobertMNewton/bambu-golang-api/pkg/utils"
 )
 
 const (
