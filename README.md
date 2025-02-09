@@ -78,6 +78,7 @@ func main() {
 ## Future Features
 
 - [ ] Custom Error Types
+- [ ] Improved API interface (i.e. interfaces?!)
 - [ ] Custom Report and Status Types
 - [ ] "Safe" GCODE Executor for enhanced safety during printing
 - [ ] Live Video Stream from the printer
