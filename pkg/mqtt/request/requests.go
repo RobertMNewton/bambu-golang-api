@@ -134,6 +134,10 @@ func CreateUnloadFilamentRequest(sequenceID string) Request {
 	return CreateRequest("print", "unload_filament", sequenceID, nil)
 }
 
+func CreateLoadFilamentRequest(sequenceID string) Request {
+	return CreateRequest("print", "load_filament", sequenceID, nil) // this might be incorrect, need to check
+}
+
 func CreateProjectFileRequest(sequenceID, filename string) Request {
 	params := map[string]interface{}{
 		"param":          filename,

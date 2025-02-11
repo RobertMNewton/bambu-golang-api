@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"sync/atomic"
 
 	"github.com/RobertMNewton/bambu-golang-api/pkg/ftp"
 	"github.com/RobertMNewton/bambu-golang-api/pkg/mqtt"
@@ -20,7 +21,7 @@ type Printer struct {
 	mu        sync.RWMutex
 	connected bool
 
-	sequence_id uint
+	sequence_id atomic.Uint32
 }
 
 func NewPrinter(config config.PrinterConfig) *Printer {
@@ -61,17 +62,43 @@ func (printer *Printer) IsConnected() bool {
 	return printer.connected
 }
 
-func (printer *Printer) SendGCode(gcode string, ctx context.Context) error {
-	request := request.CreateGCodeLineRequest(printer.GetNextSequenceId(), gcode)
+func (printer *Printer) SendRequest(request request.Request, ctx context.Context) error {
+	request.SetSequenceID(printer.getNextSequenceId())
 	return printer.mqttClient.Publish(ctx, request)
 }
 
-func (printer *Printer) GetNextSequenceId() string {
-	defer func() {
-		printer.sequence_id += 1
-	}()
+func (printer *Printer) SendGCode(gcode string, ctx context.Context) error {
+	return printer.SendRequest(request.CreateGCodeLineRequest("", gcode), ctx)
+}
 
-	return fmt.Sprint(printer.sequence_id)
+func (printer *Printer) StartPrint(filename string, ctx context.Context) error {
+	return printer.SendRequest(request.CreateGCodeFileRequest("", filename), ctx)
+}
+
+func (printer *Printer) PausePrint(ctx context.Context) error {
+	return printer.SendRequest(request.CreatePausePrintRequest(""), ctx)
+}
+
+func (printer *Printer) ResumePrint(ctx context.Context) error {
+	return printer.SendRequest(request.CreateResumePrintRequest(""), ctx)
+}
+
+func (printer *Printer) StopPrint(ctx context.Context) error {
+	return printer.SendRequest(request.CreateStopPrintRequest(""), ctx)
+}
+
+func (printer *Printer) UnloadFilament(ctx context.Context) error {
+	return printer.SendRequest(request.CreateUnloadFilamentRequest(""), ctx)
+}
+
+func (printer *Printer) LoadFilament(ctx context.Context) error {
+	return printer.SendRequest(request.CreateLoadFilamentRequest(""), ctx)
+}
+
+func (printer *Printer) getNextSequenceId() string {
+	id := printer.sequence_id.Load()
+	printer.sequence_id.Add(1)
+	return fmt.Sprint(id)
 }
 
 func (printer *Printer) setConnected(connected bool) {
